@@ -77,6 +77,13 @@ function(add_tool_to_target target)
         message("==> Clang-Tidy Target does not work with MSVC")
         return()
     endif()
+
+    find_package(Python3 COMPONENTS Interpreter)
+    if(NOT ${Python_FOUND})
+        message("==> Python3 needed for Clang-Tidy")
+        return()
+    endif()
+
     get_target_property(TARGET_SOURCES ${target} SOURCES)
     list(
         FILTER
@@ -84,12 +91,6 @@ function(add_tool_to_target target)
         INCLUDE
         REGEX
         ".*.(c|h)")
-
-    find_package(Python3 COMPONENTS Interpreter)
-    if(NOT ${Python_FOUND})
-        message("==> Python3 needed for Clang-Tidy")
-        return()
-    endif()
 
     if(ENABLE_CLANG_TIDY)
         find_program(CLANGTIDY clang-tidy)
@@ -103,7 +104,7 @@ function(add_tool_to_target target)
                     ${TARGET_SOURCES}
                     -config-file=${CMAKE_SOURCE_DIR}/.clang-tidy
                     -extra-arg-before=-std=${CMAKE_C_STANDARD}
-                    -header-filter="\(src|app\)\/*.\(h|hpp\)"
+                    -header-filter="\(src|app\)\/*.h"
                     -p=${CMAKE_BINARY_DIR}
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 USES_TERMINAL)
@@ -114,9 +115,15 @@ function(add_tool_to_target target)
 endfunction()
 
 function(add_clang_tidy_msvc_to_target target)
-    if (ENABLE_CLANG_TIDY)
+    if(NOT CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        message("==> Only applicable for MSVC")
+        return()
+    endif()
+    if(ENABLE_CLANG_TIDY)
         message("==> Added MSVC ClangTidy (VS GUI only) for: ${target}")
-        set_target_properties(${target} PROPERTIES VS_GLOBAL_EnableMicrosoftCodeAnalysis false)
-        set_target_properties(${target} PROPERTIES VS_GLOBAL_EnableClangTidyCodeAnalysis true)
+        set_target_properties(
+            ${target} PROPERTIES VS_GLOBAL_EnableMicrosoftCodeAnalysis false)
+        set_target_properties(
+            ${target} PROPERTIES VS_GLOBAL_EnableClangTidyCodeAnalysis true)
     endif()
 endfunction(add_clang_tidy_msvc_to_target)
