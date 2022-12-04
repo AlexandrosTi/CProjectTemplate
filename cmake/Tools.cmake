@@ -71,10 +71,10 @@ function(add_clang_format_target)
     endif()
 endfunction()
 
-# iwyu, clang-tidy and cppcheck
+# clang-tidy target
 function(add_tool_to_target target)
     if(CMAKE_C_COMPILER_ID MATCHES "MSVC")
-        message("==> Cppcheck, IWYU and Clang-Tidy do not work with MSVC")
+        message("==> Clang-Tidy Target does not work with MSVC")
         return()
     endif()
     get_target_property(TARGET_SOURCES ${target} SOURCES)
@@ -87,7 +87,7 @@ function(add_tool_to_target target)
 
     find_package(Python3 COMPONENTS Interpreter)
     if(NOT ${Python_FOUND})
-        message("==> Python3 needed for IWYU and Clang-Tidy")
+        message("==> Python3 needed for Clang-Tidy")
         return()
     endif()
 
@@ -112,3 +112,11 @@ function(add_tool_to_target target)
         endif()
     endif()
 endfunction()
+
+function(add_clang_tidy_msvc_to_target target)
+    if (ENABLE_CLANG_TIDY)
+        message("==> Added MSVC ClangTidy (VS GUI only) for: ${target}")
+        set_target_properties(${target} PROPERTIES VS_GLOBAL_EnableMicrosoftCodeAnalysis false)
+        set_target_properties(${target} PROPERTIES VS_GLOBAL_EnableClangTidyCodeAnalysis true)
+    endif()
+endfunction(add_clang_tidy_msvc_to_target)

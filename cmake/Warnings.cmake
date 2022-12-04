@@ -15,10 +15,8 @@ function(target_set_warnings)
     message("==> Warnings as Errors for: ${TARGET_SET_WARNINGS_AS_ERRORS}")
 
     set(MSVC_WARNINGS
-        # Baseline
         /W4 # Baseline reasonable warnings
         /permissive- # standards conformance mode for MSVC compiler
-        # C and C++ Warnings
         /w14242 # conversion from 'type1' to 'type1', possible loss of data
         /w14287 # unsigned/negative constant mismatch
         /w14296 # expression is always 'boolean_value'
@@ -29,11 +27,9 @@ function(target_set_warnings)
     )
 
     set(CLANG_WARNINGS
-        # Baseline
         -Wall
         -Wextra # reasonable and standard
         -Wpedantic # warn if non-standard is used
-        # C and C++ Warnings
         -Wshadow # if a variable declaration shadows one from a parent context
         -Wunused # warn on anything being unused
         -Wformat=2 # warn on security issues around functions that format output
