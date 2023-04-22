@@ -17,15 +17,14 @@ int main(int argc, const char **argv)
 {
     log_info("Welcome to %s v%s\n", project_name, project_version);
 
-    int i = 0;
-
+    // int i = 0;
     int verbose = 0;
     const char *path = NULL;
     struct argparse_option options[] = {
         OPT_HELP(),
         OPT_GROUP("Program options"),
-        OPT_BOOLEAN('v', "verbose", &verbose, "To enable verbose output"),
-        OPT_STRING('f', "filename", &path, "Json Filepath"),
+        OPT_BOOLEAN('v', "verbose", &verbose, "To enable verbose output", NULL, 0, 0),
+        OPT_STRING('f', "filename", &path, "Json Filepath", NULL, 0, 0),
         OPT_END(),
     };
 
